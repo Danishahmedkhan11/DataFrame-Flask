@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CRUD Example</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <style>
+        /* CSS styles for the table */
+        body{
+            margin: 0 0;
+            padding:10px 10px;
+        }
+        .navbar{
+            display: flex;
+            margin: 0;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        /* CSS styles for the form */
+        form {
+            margin-bottom: 20px;
+        }
+        input[type="text"], textarea {
+            padding: 5px;
+            width: 300px;
+        }
+        input[type="submit"] {
+            padding: 5px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="mx-auto">
+            <a href="{{url_for('download')}}" class="btn btn-success" download>Download PDF</a>
+
+        </div>
+        <div class="mx-auto">
+            <a href="{{ url_for('logout') }}" class="btn btn-success">Logout</a>
+        </div>
+        
+    </nav>
+  
+
+    <h1>Create Form</h1>
+
+    <form action="{{ url_for('home') }}" method='post'>
+        <input type="text" name="name" placeholder="Name">
+        <input type="text" name="email" placeholder="Email">
+        <input type="submit" name='submit' *value="Create">
+    </form>
+
+    <h1>File Upload</h1>
+    {% with message=get_flashed_messages(with_categories=true) %}
+    {% if message %}
+    {% for category,msg in message %}
+    <p style='color:red'><strong>{{ msg }}</strong></p>
+    
+    {% endfor%}
+    {% endif%}
+
+    {% endwith %}
+    <form method="post" action="{{url_for('upload')}}" enctype="multipart/form-data">
+        <input type="file" name="file" accept=".csv">
+        <input type="submit" value="Upload">
+    </form>
+
+    <table>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Street</th>
+            <th>City</th>
+            <th>State</th>
+            <th>Zip</th>
+            <th>Price</th>
+            <th>Location</th>
+            <th>Action</th>
+        </tr>
+
+        {% if usernames: %}
+        {% for user in usernames: %}
+        <tr>
+            <td>{{ user.id}}</td>
+            <td>{{ user.name}}</td>
+            <td>{{ user.street}}</td>
+            <td>{{ user.city}}</td>
+            <td>{{ user.state}}</td>
+            <td>{{ user.zip}}</td>
+            <td>{{ user.price}}</td>
+            <td>{{ user.location}}</td>
+            <td>
+                <a href="{{ url_for('delete_post', user_id=user.id) }}">Delete</a>
+                <a href="{{ url_for('edit',user_id=user.id)}}">Edit</a>
+            </td>
+        </tr>
+        
+        {% endfor %}
+        {% else %}
+        <tr>
+          
+        </tr>
+      
+        {% endif %}
+        <!-- Repeat the above row structure for each data entry -->
+    </table>
+</body>
+
+<script>
+    function sendRequest() {
+        // Send an AJAX request to the server
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/download', true);
+        xhr.send();
+    }
+</script>
+</html>
